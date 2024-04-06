@@ -9,7 +9,7 @@ var memosData = {
 }
 var memosDom = document.querySelector(memosData.dom);
 
-let memoList
+var memoList
 var memoDefaultList = [
   {
     "creatorName": "林木木",
@@ -83,9 +83,9 @@ var memosMeAvatarUrl = window.localStorage && window.localStorage.getItem("memos
 var memosMeArtalk = window.localStorage && window.localStorage.getItem("memos-artalk-input");
 var memosMeArtalkSite = window.localStorage && window.localStorage.getItem("memos-artalksite-input");
 var memosMeTwikoo = window.localStorage && window.localStorage.getItem("memos-twikoo-input");
-let cfwkAiUrl = window.localStorage && window.localStorage.getItem("memos-cfwkai-url")
-let geminiKey = window.localStorage && window.localStorage.getItem("memos-gemini-key")
-let filterName = window.localStorage && window.localStorage.getItem("memos-filter-name")
+var cfwkAiUrl = window.localStorage && window.localStorage.getItem("memos-cfwkai-url")
+var geminiKey = window.localStorage && window.localStorage.getItem("memos-gemini-key")
+var filterName = window.localStorage && window.localStorage.getItem("memos-filter-name")
 
 var memosEditorCont = `
 <div class="memos-editor animate__animated animate__fadeIn col-12 d-none">
@@ -256,17 +256,17 @@ var loadBtn = document.querySelector("button.button-load");
 
 var limit = memosData.limit,page = 1,nums = 0,dataNum = 0,memosContType = 0, memosAccess = 0,randomUser = 0;
 var memoData = [],memosStr = [],memoCreatorMap = {},twikooCount = {},artalkCount = {};
-let memosMode;
-let nowLink;
-let nowId;
-let nowName;
-let nowAvatar;
-let nowTagList = "";
+var memosMode;
+var nowLink;
+var nowId;
+var nowName;
+var nowAvatar;
+var nowTagList = "";
 var memoChangeDate = 0;
 var getSelectedValue = window.localStorage && window.localStorage.getItem("memos-visibility-select") || "PUBLIC";
 
 document.addEventListener("DOMContentLoaded", () => {
-  let getTheme = window.localStorage && window.localStorage.getItem("theme");
+  var getTheme = window.localStorage && window.localStorage.getItem("theme");
   if (getTheme !== null && getTheme == "dark"){
 			document.body.classList.add("dark-theme","dark");
 	}else{
@@ -315,9 +315,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   //查询当前页面 window.location.origin 作为主页展示
-  let memobbsAdmin = []
-  let memobbsLink = window.location.origin;
-  let linkIndex = memoList.findIndex(item => (item.website == memobbsLink))
+  var memobbsAdmin = []
+  var memobbsLink = window.location.origin;
+  var linkIndex = memoList.findIndex(item => (item.website == memobbsLink))
   if(linkIndex >= 0){
     memobbsAdmin.push(memoList[linkIndex])
     const mergedArray2 = [...memobbsAdmin, ...memoList];
@@ -342,9 +342,9 @@ async function getMemoListData(url) {
   const response = await fetch(url);
   const data = await response.json();
   if(filterName){
-    let namesToRemove = filterName.replace(/，/g, ",").split(',');
-    for (let name of namesToRemove) {
-    let nameIndex = data.myMemoList.findIndex(item => (item.creatorName == name));
+    var namesToRemove = filterName.replace(/，/g, ",").split(',');
+    for (var name of namesToRemove) {
+    var nameIndex = data.myMemoList.findIndex(item => (item.creatorName == name));
       if (nameIndex !== -1) {
         delete data.myMemoList.splice(nameIndex, 1);
       }
@@ -383,9 +383,9 @@ function memoFollow(mode) {
   });
 
   async function getMemoCount(m) {
-    let twikooData = m.filter(item => item.twikoo);
+    var twikooData = m.filter(item => item.twikoo);
     if (twikooData.length !== 0) {
-      let twikooRes = {};
+      var twikooRes = {};
       for (const { creatorName, twikoo, link, id } of twikooData) {
         if (!twikooRes[creatorName]) {
           twikooRes[creatorName] = {
@@ -396,11 +396,11 @@ function memoFollow(mode) {
         }
         twikooRes[creatorName].urls.push(`${link}/m/${id}`);
       }
-      let twikooList = Object.values(twikooRes);
-      let twikooPromise = await Promise.all(
+      var twikooList = Object.values(twikooRes);
+      var twikooPromise = await Promise.all(
         twikooList.map(async (item) => {
           try {
-            let res = await twikoo.getCommentsCount({
+            var res = await twikoo.getCommentsCount({
               envId: item.envId,
               urls: item.urls,
               includeReply: false
@@ -414,9 +414,9 @@ function memoFollow(mode) {
       );
       twikooCount = twikooPromise.flatMap(r => r);
     }
-    let artalkData = m.filter(item => item.artalk);
+    var artalkData = m.filter(item => item.artalk);
     if (artalkData.length !== 0) {
-      let artalkRes = {};
+      var artalkRes = {};
       for (const { creatorName, artalk, artSite, link, id } of artalkData) {
         if (!artalkRes[creatorName]) {
           artalkRes[creatorName] = {
@@ -429,19 +429,19 @@ function memoFollow(mode) {
         }
         artalkRes[creatorName].urls.push(`/m/${id}`);
       }
-      let artalkList = Object.values(artalkRes);
-      let artalkPromise = await Promise.all(
+      var artalkList = Object.values(artalkRes);
+      var artalkPromise = await Promise.all(
         artalkList.map(async (item) => {
           try {
-            let pageKeys = item.urls.join(',');
-            let siteName = item.site_name;
-            let response = await fetch(`${item.envId}/api/v2/stats/page_comment?page_keys=${pageKeys}&site_name=${siteName}`);
+            var pageKeys = item.urls.join(',');
+            var siteName = item.site_name;
+            var response = await fetch(`${item.envId}/api/v2/stats/page_comment?page_keys=${pageKeys}&site_name=${siteName}`);
             if (!response.ok) {
               throw new Error(`Request failed`);
             }
-            let results = await response.json();
-            let countList = item.urls.map(url => {
-              let count = results.data[url] || 0;
+            var results = await response.json();
+            var countList = item.urls.map(url => {
+              var count = results.data[url] || 0;
               return { url: item.link + url, count };
             });
             return countList;
@@ -453,15 +453,15 @@ function memoFollow(mode) {
       artalkCount = artalkPromise.flatMap(r => r);
     }
     for (const item of m) {
-      let count = 0;
-      let url = `${item.link}/m/${item.id}`;
+      var count = 0;
+      var url = `${item.link}/m/${item.id}`;
       if (item.twikoo) {
-        let memoCount = twikooCount.find((o) => o.url === url);
+        var memoCount = twikooCount.find((o) => o.url === url);
         if (memoCount) {
           count = memoCount.count;
         }
       } else if (item.artalk) {
-        let memoCount = artalkCount.find((o) => o.url === url);
+        var memoCount = artalkCount.find((o) => o.url === url);
         if (memoCount) {
           count = memoCount.count;
         }
@@ -473,7 +473,7 @@ function memoFollow(mode) {
   this.getMemoCount = getMemoCount;
 
   function updateData(res) {
-    let oneDayTag = window.localStorage && window.localStorage.getItem("memos-oneday-tag");
+    var oneDayTag = window.localStorage && window.localStorage.getItem("memos-oneday-tag");
     if(oneDayTag !== null){
       const firstItem = res.slice(0, 1);
       const restItems = res.slice(1);
@@ -518,12 +518,12 @@ function memoFollow(mode) {
 
 // 插入 html 
 async function updateHtml(data) {
-  let oneDayClass = "oneday";
-  let tagnowHas = document.querySelector(".memos-tagnow")
-  let memosMode = window.localStorage && window.localStorage.getItem("memos-mode");
-  let oneDayTag = window.localStorage && window.localStorage.getItem("memos-oneday-tag");
-  let result = '',itemOption = '',itemContent = '';
-  let TAG_REG = /#([^#\s!.,;:?"'()]+)(?= )/g, 
+  var oneDayClass = "oneday";
+  var tagnowHas = document.querySelector(".memos-tagnow")
+  var memosMode = window.localStorage && window.localStorage.getItem("memos-mode");
+  var oneDayTag = window.localStorage && window.localStorage.getItem("memos-oneday-tag");
+  var result = '',itemOption = '',itemContent = '';
+  var TAG_REG = /#([^#\s!.,;:?"'()]+)(?= )/g, 
     IMG_REG = /\!\[(.*?)\]\((.*?)\)/g,
     LINK_REG = /(?<!!)\[(.*?)\]\((.*?)\)/g,
     LINE_REG = /\n/g,
@@ -544,24 +544,24 @@ async function updateHtml(data) {
       langPrefix: 'language-'
     });
   for (var i = 0; i < data.length; i++) {
-    let memo = data[i];
+    var memo = data[i];
     //console.log(memo)
-    let link = memo.link;
-    let memoString = JSON.stringify(memo).replace(/"/g, '&quot;');
-    let avatar = memo.avatar;
-    let count = memo.count || "";
-    let website = memo.website;
-    let creatorId = memo.creatorId;
-    let creatorName = memo.creatorName;
-    let createdTs = memo.createdTs;
-    let in2Week = Math.floor(new Date().getTime()/ 1000) - createdTs <= 1209600 ? "in2week" : "out2week";
-    let memosId = createdTs+memo.id;
-    let memosVisibility = memo.visibility
-    let twikooEnv = memo.twikoo;
-    let artalkEnv = memo.artalk;
-    let artSite = `${memo.artSite}`;
-    let memosLink = memo.link + "/m/" + (memo.name || memo.id);
-    let memosRes = memo.content
+    var link = memo.link;
+    var memoString = JSON.stringify(memo).replace(/"/g, '&quot;');
+    var avatar = memo.avatar;
+    var count = memo.count || "";
+    var website = memo.website;
+    var creatorId = memo.creatorId;
+    var creatorName = memo.creatorName;
+    var createdTs = memo.createdTs;
+    var in2Week = Math.floor(new Date().getTime()/ 1000) - createdTs <= 1209600 ? "in2week" : "out2week";
+    var memosId = createdTs+memo.id;
+    var memosVisibility = memo.visibility
+    var twikooEnv = memo.twikoo;
+    var artalkEnv = memo.artalk;
+    var artSite = `${memo.artSite}`;
+    var memosLink = memo.link + "/m/" + (memo.name || memo.id);
+    var memosRes = memo.content
       .replace(TAG_REG, "")
       .replace(IMG_REG, "")
       .replace(DOUDB_LINK_REG, "")
@@ -575,35 +575,35 @@ async function updateHtml(data) {
       .replace(QQVIDEO_REG, `<div class='video-wrapper'><iframe src='//v.qq.com/iframe/player.html?vid=$1' allowFullScreen='true' frameborder='no'></iframe></div>`)
       .replace(YOUKU_REG, `<div class='video-wrapper'><iframe src='https://player.youku.com/embed/$1' frameborder=0 'allowfullscreen'></iframe></div>`)
       .replace(YOUTUBE_REG, `<div class='video-wrapper'><iframe src='https://www.youtube.com/embed/$1' title='YouTube video player' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen title='YouTube Video'></iframe></div>`)
-    let transData = memo.content.replace(TAG_REG, "").replace(IMG_REG, "").replace(LINK_REG, "$1").replace(LINE_REG, " ").replace(BLOCKQUDTE_REG, "").replace(CODE_REG, "");
+    var transData = memo.content.replace(TAG_REG, "").replace(IMG_REG, "").replace(LINK_REG, "$1").replace(LINE_REG, " ").replace(BLOCKQUDTE_REG, "").replace(CODE_REG, "");
     if(transData.length>140){transData = transData.substring(0,140) + '...'};
-    let memosForm = {creatorName:creatorName,content:transData,url:memosLink};
-    let memosFormString = JSON.stringify(memosForm).replace(/"/g, '&quot;');
+    var memosForm = {creatorName:creatorName,content:transData,url:memosLink};
+    var memosFormString = JSON.stringify(memosForm).replace(/"/g, '&quot;');
     //解析 content 内 md 格式图片
-    let imgArr = memo.content.match(IMG_REG);
-    let imgStr = String(imgArr).replace(/[,]/g, '');
+    var imgArr = memo.content.match(IMG_REG);
+    var imgStr = String(imgArr).replace(/[,]/g, '');
     if (imgArr) {
-        let memosImg = imgStr.replace(IMG_REG, `<div class="memo-resource width-100"><img class="lozad" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="$2"></div>`)
+        var memosImg = imgStr.replace(IMG_REG, `<div class="memo-resource width-100"><img class="lozad" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="$2"></div>`)
         memosRes += `<div class="resource-wrapper"><div class="images-wrapper my-2" view-image>${memosImg}</div></div>`
     }
     // DoubanDB
-    let doudbArr = memo.content.match(DOUDB_LINK_REG);
-    let neodbDom = '';
+    var doudbArr = memo.content.match(DOUDB_LINK_REG);
+    var neodbDom = '';
     if(doudbArr){
-      for(let k=0;k < doudbArr.length;k++){
+      for(var k=0;k < doudbArr.length;k++){
         neodbDom += await fetchNeoDB(doudbArr[k],"douban")
       }
     }
     // DoubanDB
-    let neodbArr = memo.content.match(NEODB_LINK_REG);
+    var neodbArr = memo.content.match(NEODB_LINK_REG);
     if(neodbArr){
-      for(let l=0;l < neodbArr.length;l++){
+      for(var l=0;l < neodbArr.length;l++){
         neodbDom += await fetchNeoDB(neodbArr[l],"neodb")
       }
     }
     //标签
-    let tagArr = memo.content.match(TAG_REG);
-    let memosTag = '';
+    var tagArr = memo.content.match(TAG_REG);
+    var memosTag = '';
     if (tagArr) {
       memosTag = tagArr.map(t=>{
         return `<div class="item-tag d-flex align-items-center text-sm line-xl mr-2 px-2" onclick="getTagNow('${link}','${creatorId}','${creatorName}','${avatar}',this)">${String(t).replace(/[#]/, '')}</div>`;
@@ -615,12 +615,12 @@ async function updateHtml(data) {
     //解析内置资源文件
     //console.log(memo)
     if (memo.resourceList && memo.resourceList.length > 0) {
-      let resourceList = memo.resourceList;
-      let imgUrl = '',resUrl = '',resImgLength = 0;
-      for (let j = 0; j < resourceList.length; j++) {
-        let restype = resourceList[j].type.slice(0, 5);
-        let resexlink = resourceList[j].externalLink;
-        let imgLink = '', fileId = '';
+      var resourceList = memo.resourceList;
+      var imgUrl = '',resUrl = '',resImgLength = 0;
+      for (var j = 0; j < resourceList.length; j++) {
+        var restype = resourceList[j].type.slice(0, 5);
+        var resexlink = resourceList[j].externalLink;
+        var imgLink = '', fileId = '';
         if (resexlink) {
             imgLink = resexlink
         } else {
@@ -648,7 +648,7 @@ async function updateHtml(data) {
         memosRes += `<p class="datasource">${resUrl}</p>`
       }
     }
-    let memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
+    var memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
     if (memosOpenId != null && memosOpenId !== ""  && nowId == creatorId && nowLink == link) {
       itemOption = `<div class="item-option mr-1"><div class="d-flex dropdown"><svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></g></svg><div class="dropdown-wrapper d-none"><a class="btn edit-btn" data-form="${memoString}" onclick="editMemo(this)">编辑</a><a class="btn" onclick="archiveMemo('${memo.id}')">归档</a><a class="btn" onclick="deleteMemo('${memo.id}')">删除</a></div></div></div>`;
     }else if (memosOpenId != null && memosOpenId !== "") {
@@ -700,12 +700,12 @@ async function updateHtml(data) {
     target: '.item-mate.in2week'
   });
   //延迟加载
-  let observer = lozad('.lozad');
+  var observer = lozad('.lozad');
   observer.observe();
   //下拉菜单
-  let dropdowns = document.querySelectorAll(".dropdown");
+  var dropdowns = document.querySelectorAll(".dropdown");
   Array.from(dropdowns).forEach(function(dropdown) {
-    let lis = Array.from(dropdown.children).slice(1);
+    var lis = Array.from(dropdown.children).slice(1);
     dropdown.addEventListener("mouseenter", function() {
       lis.forEach(function(item) {
         item.classList.remove("d-none");
@@ -720,7 +720,7 @@ async function updateHtml(data) {
 }
 
 function withTimeout(millis, promise) {
-  let timeout = new Promise((resolve, reject) =>
+  var timeout = new Promise((resolve, reject) =>
     setTimeout(() => reject(`Timed out after ${millis} ms.`), millis)
   );
   return Promise.race([promise, timeout]);
@@ -730,7 +730,7 @@ async function getMemos(search) {
   memoData = [], memoCreatorMap = {}, page = 1, nums = 0, dataNum = 0, memosContType = 0, memosAccess = 0;
   memoDom.innerHTML = skeleton;
   loadBtn.classList.add("d-none");
-  let results;
+  var results;
   if(search && search != "" && search != null ){
     results = await Promise.allSettled(memoList.map(u => 
       withTimeout(2000, fetch(`${u.link}/api/v1/memo?creatorId=${u.creatorId}&content=${search}&rowStatus=NORMAL&limit=${limit}`)
@@ -758,7 +758,7 @@ async function getMemos(search) {
     memoCreatorMap[item.creatorName] = item;
   });
   memoData = memoData.map(item => {
-    let data = memoCreatorMap[item.creatorName];
+    var data = memoCreatorMap[item.creatorName];
     return {...item, ...data};
   });
   //memoData = await getMemoCount(memoData);
@@ -781,9 +781,9 @@ myFeedsBtn.addEventListener('click', function(event) {
   memoDom.innerHTML = skeleton;
   usernowBtnDom.forEach((item) => {item.classList.remove('current');})
   myFeedsBtn.classList.add("current")
-  let fetchUrl = "https://cf.edui.fun/all?rule=created&end=20"
+  var fetchUrl = "https://cf.edui.fun/all?rule=created&end=20"
   fetch(fetchUrl).then(res => res.json()).then(resdata =>{
-    let myFeedData = resdata.article_data
+    var myFeedData = resdata.article_data
     var myFeedArticle = '';
     for (var i = 0;i<myFeedData.length;i++){
       var item = myFeedData[i];
@@ -815,15 +815,15 @@ myFeedsBtn.addEventListener('click', function(event) {
 
 function myFeedsXML(e){
   loadBtn.classList.add('d-none');
-  let myfeedsDom = document.querySelector(".myfeeds")
+  var myfeedsDom = document.querySelector(".myfeeds")
   document.querySelectorAll('.myfeeds-xml').forEach((item) => {
     item.classList.add('noclick');
     item.classList.remove('current');
   })
   e.classList.add("current")
-  let type = e.getAttribute("data-type")
+  var type = e.getAttribute("data-type")
   myfeedsDom.innerHTML = ""
-  let myFeedArticle = '',entries;
+  var myFeedArticle = '',entries;
   myfeedsDom.innerHTML = skeleton;
   if(type=="bfind"){
     fetch('https://cors.memobbs.app/https://bf.zzxworld.com/feed.xml').then(response => response.text()).then(str => new window.DOMParser().parseFromString(str, 'text/xml'))
@@ -838,7 +838,7 @@ function myFeedsXML(e){
       });
       var myFeedArticle = '';
       for (var i = 0;i<20;i++){
-        let item = entries[i];
+        var item = entries[i];
         myFeedArticle +=`
         <div class="card-item flex-fill p-3">
           <div class="d-flex flex-fill">
@@ -870,7 +870,7 @@ function myFeedsXML(e){
       });
       var myFeedArticle = '';
       for (var i = 0;i<15;i++){
-        let item = entries[i];
+        var item = entries[i];
         myFeedArticle +=`
         <div class="card-item flex-fill p-3">
           <div class="d-flex flex-fill">
@@ -901,7 +901,7 @@ function myFeedsXML(e){
         };
       });
       for (var i = 0;i<20;i++){
-        let item = entries[i];
+        var item = entries[i];
         myFeedArticle +=`
         <div class="card-item flex-fill p-3">
           <div class="d-flex flex-fill">
@@ -923,7 +923,7 @@ function myFeedsXML(e){
   if(type=="shinian"){
     fetch("https://www.foreverblog.cn/api/v1/blog/feeds?page=1").then(res => res.json()).then(resdata =>{
       for (var i = 0;i<20;i++){
-        let item = resdata.data.data[i];
+        var item = resdata.data.data[i];
         myFeedArticle +=`
         <div class="card-item flex-fill p-3">
           <div class="d-flex flex-fill">
@@ -946,7 +946,7 @@ function myFeedsXML(e){
 
 //标签筛选且输入框为空，自动插入标签
 memosTextarea.addEventListener('focus', function(event) {
-  let nowTag = document.querySelector(".memos-tagnow-name")
+  var nowTag = document.querySelector(".memos-tagnow-name")
   if(nowTag !== null && memosTextarea.value == ""){
     memosTextarea.value = "#"+nowTag.textContent+" ";
   }
@@ -977,10 +977,10 @@ searchBtn.addEventListener("click", function () {
 
 function searchNow(serchText){
   if(serchText !== ""){
-    let tagnowHas = document.querySelector(".memos-tagnow")
+    var tagnowHas = document.querySelector(".memos-tagnow")
     if(tagnowHas) tagnowHas.remove();
-    let usernowName = document.querySelector(".user-now-name").innerHTML;
-    let serchDom = `
+    var usernowName = document.querySelector(".user-now-name").innerHTML;
+    var serchDom = `
       <div class="memos-tagnow row p-2 mb-2">
         <div class="memos-tagnow-title mr-3">当前搜索b:</div>
         <div class="memos-tagnow-name card-item pr-2 pl-2" onclick="reloadUser('search')">${serchText}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-auto ml-1 opacity-40"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></div>
@@ -989,11 +989,11 @@ function searchNow(serchText){
     if(usernowName == ""){
       getMemos(serchText)
     }else{
-      let userNameIndex = memoList.findIndex(item => (item.creatorName == usernowName));
+      var userNameIndex = memoList.findIndex(item => (item.creatorName == usernowName));
       if(userNameIndex == -1){
         getUserMemos(nowLink,nowId,nowName,nowAvatar,"",serchText)
       }else{
-        let userNowData = memoList[userNameIndex]
+        var userNowData = memoList[userNameIndex]
         getUserMemos(userNowData.link,userNowData.creatorId,userNowData.creatorName,userNowData.avatar,"",serchText)
       }
     }
@@ -1010,13 +1010,13 @@ function searchNow(serchText){
 
 //显示订阅列表
 userlistBtn.addEventListener("click", function () {
-  let userlistDom = document.querySelector(".userlist");
+  var userlistDom = document.querySelector(".userlist");
   if(userlistDom){
     userlistDom.remove();
   }else{
-    let userlistDom = `<div class="userlist card-item d-flex flex-wrap mb-3 animate__animated animate__fadeIn">`;
+    var userlistDom = `<div class="userlist card-item d-flex flex-wrap mb-3 animate__animated animate__fadeIn">`;
     for (var i = 0; i < memoList.length; i++) {
-      let nowMemo = memoList[i]
+      var nowMemo = memoList[i]
       userlistDom += `<div onclick="getUserMemos('${nowMemo.link}', '${nowMemo.creatorId}','${nowMemo.creatorName.replace(/'/g, "’")}','${nowMemo.avatar}')" class="item-avatar" style="background-image:url(${nowMemo.avatar})"></div>`
     }
     userlistDom += `</div>`;
@@ -1042,8 +1042,8 @@ function goBbs(){
   goBbsBtn.classList.add("current")
   goHomeBtn.classList.remove("current")
   getMemos();
-  let usernowName = document.querySelector(".user-now-name");
-  let usernowAvatar = document.querySelector(".user-now-avatar");
+  var usernowName = document.querySelector(".user-now-name");
+  var usernowAvatar = document.querySelector(".user-now-avatar");
   usernowName.innerHTML = "";
   usernowAvatar.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
   //goBbsBtn.classList.remove("noclick")
@@ -1052,19 +1052,19 @@ function goBbs(){
 
 goHomeBtn.addEventListener("click", function () {
   window.localStorage && window.localStorage.setItem("memos-mode",  "MEMOSHOME");
-  let tagnowHas = document.querySelector(".memos-tagnow")
+  var tagnowHas = document.querySelector(".memos-tagnow")
   if(tagnowHas) tagnowHas.remove();
   goHome();
 });
 goBbsBtn.addEventListener("click", function () {
   window.localStorage && window.localStorage.setItem("memos-mode",  "MEMOSBBS");
-  let tagnowHas = document.querySelector(".memos-tagnow")
+  var tagnowHas = document.querySelector(".memos-tagnow")
   if(tagnowHas) tagnowHas.remove();
   goBbs()
 });
 randomUserBtn.addEventListener("click", function () {
   window.localStorage && window.localStorage.setItem("memos-mode",  "RANDUSER");
-  let tagnowHas = document.querySelector(".memos-tagnow")
+  var tagnowHas = document.querySelector(".memos-tagnow")
   if(tagnowHas) tagnowHas.remove();
   goRandUser()
 });
@@ -1073,29 +1073,29 @@ function goRandUser(){
   randomUser = 1;
   usernowBtnDom.forEach((item) => {item.classList.remove('current');})
   randomUserBtn.classList.add("current")
-  let usernowName = document.querySelector(".user-now-name");
-  let usernowAvatar = document.querySelector(".user-now-avatar");
+  var usernowName = document.querySelector(".user-now-name");
+  var usernowAvatar = document.querySelector(".user-now-avatar");
   usernowName.innerHTML = ""
   usernowAvatar.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-  let randomIndex = Math.floor(Math.random() * (memoList.length +1));
-  let userNowData = memoList[randomIndex]
+  var randomIndex = Math.floor(Math.random() * (memoList.length +1));
+  var userNowData = memoList[randomIndex]
   getUserMemos(userNowData.link,userNowData.creatorId,userNowData.creatorName,userNowData.avatar,"","")
   cocoMessage.success(userNowData.creatorName+" 上线～");
 }
 
 //重载当前 user
 function reloadUser(mode){
-  let tagnowHas = document.querySelector(".memos-tagnow")
+  var tagnowHas = document.querySelector(".memos-tagnow")
   if(tagnowHas) tagnowHas.remove();
-  let usernowName = document.querySelector(".user-now-name").innerHTML;
+  var usernowName = document.querySelector(".user-now-name").innerHTML;
   if(usernowName == ""){
     getMemos()
   }else{
-    let userNameIndex = memoList.findIndex(item => (item.creatorName == usernowName));
+    var userNameIndex = memoList.findIndex(item => (item.creatorName == usernowName));
     if(userNameIndex == -1){
       getUserMemos(nowLink,nowId,nowName,nowAvatar)
     }else{
-      let userNowData = memoList[userNameIndex]
+      var userNowData = memoList[userNameIndex]
       getUserMemos(userNowData.link,userNowData.creatorId,userNowData.creatorName,userNowData.avatar)
     }
   }
@@ -1111,14 +1111,14 @@ async function getUserMemos(link,id,name,avatar,tag,search,mode,random) {
     randomUserBtn.classList.add("noclick")
     memoData = [],memoCreatorMap = {}, page = 1,nums = 0,dataNum = 0,memosContType = 1;
     memosPath = window.localStorage && window.localStorage.getItem("memos-access-path");
-    let usernowName = document.querySelector(".user-now-name");
-    let usernowAvatar = document.querySelector(".user-now-avatar");
+    var usernowName = document.querySelector(".user-now-name");
+    var usernowAvatar = document.querySelector(".user-now-avatar");
     usernowName.innerHTML = name;
     usernowAvatar.src = avatar;
     if (link == memosPath) {
       memosAccess = 1;
     };
-    let userMemoUrl;
+    var userMemoUrl;
     if(tag && (random == null || random == "" )){
       userMemoUrl = `${link}/api/v1/memo?creatorId=${id}&tag=${tag}&rowStatus=NORMAL&limit=50`;
     }else if(search){
@@ -1137,7 +1137,7 @@ async function getUserMemos(link,id,name,avatar,tag,search,mode,random) {
 
     if (link == memosPath) {
       try {
-        let response = await fetch(userMemoUrl,{
+        var response = await fetch(userMemoUrl,{
             headers: {
               'Authorization': `Bearer ${memosOpenId}`,
               'Content-Type': 'application/json',
@@ -1146,15 +1146,15 @@ async function getUserMemos(link,id,name,avatar,tag,search,mode,random) {
             cache: 'no-store',
         });
         if (response.ok) {
-          let data = await response.json();
-          let oneDayTag = window.localStorage && window.localStorage.getItem("memos-oneday-tag");
-          let oneDayTagCount = window.localStorage && window.localStorage.getItem("memos-oneday-count");
+          var data = await response.json();
+          var oneDayTag = window.localStorage && window.localStorage.getItem("memos-oneday-tag");
+          var oneDayTagCount = window.localStorage && window.localStorage.getItem("memos-oneday-count");
           if( oneDayTag !== null && oneDayTagCount !== null && !search ){
-            let randomOneNum = Math.floor(Math.random() * oneDayTagCount)
-            let oneDayUrl = `${link}/api/v1/memo?tag=${oneDayTag}&limit=1&offset=${randomOneNum}`
+            var randomOneNum = Math.floor(Math.random() * oneDayTagCount)
+            var oneDayUrl = `${link}/api/v1/memo?tag=${oneDayTag}&limit=1&offset=${randomOneNum}`
             //console.log(oneDayUrl)
             try {
-              let responseOne = await fetch(oneDayUrl,{
+              var responseOne = await fetch(oneDayUrl,{
                 headers: {
                   'Authorization': `Bearer ${memosOpenId}`,
                   'Content-Type': 'application/json',
@@ -1188,7 +1188,7 @@ async function getUserMemos(link,id,name,avatar,tag,search,mode,random) {
             memoCreatorMap[item.creatorName] = item;
           });
           memoData = memoData.map(item => {
-            let data = memoCreatorMap[item.creatorName];
+            var data = memoCreatorMap[item.creatorName];
             return {...item, ...data};
           });
           if (mode !== "NOPUBLIC") {
@@ -1207,17 +1207,17 @@ async function getUserMemos(link,id,name,avatar,tag,search,mode,random) {
       }
     }else{
         try {
-          let response = await fetch(userMemoUrl);
+          var response = await fetch(userMemoUrl);
           if (!response.ok) {
             throw new Error(response.statusText);
           }
-          let data = await response.json();
+          var data = await response.json();
           memoData = data.flatMap(result => result);
           memoList.forEach(item => {
             memoCreatorMap[item.creatorName] = item;
           });
           memoData = memoData.map(item => {
-            let data = memoCreatorMap[item.creatorName];
+            var data = memoCreatorMap[item.creatorName];
             return {...item, ...data};
           });
           memoData = await this.getMemoCount(memoData);
@@ -1243,7 +1243,7 @@ async function getUserMemos(link,id,name,avatar,tag,search,mode,random) {
 }
 // Fetch NeoDB
 async function fetchNeoDB(url,mode){
-  let urlNow;
+  var urlNow;
   if(mode == "douban"){
     urlNow = "https://api-neodb.immmmm.com/?url="+url
   }else if(mode = "neodb"){
@@ -1251,9 +1251,9 @@ async function fetchNeoDB(url,mode){
     console.log(url)
     urlNow = url.replace("social/","social/api/")
   }
-  let response = await fetch(urlNow);
-  let dbFetch = await response.json();
-  let neodbDom = `<div class="db-card">
+  var response = await fetch(urlNow);
+  var dbFetch = await response.json();
+  var neodbDom = `<div class="db-card">
     <div class="db-card-subject">
         <div class="db-card-post"><img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="${dbFetch.cover_image_url}"></div>
         <div class="db-card-content">
@@ -1268,10 +1268,10 @@ async function fetchNeoDB(url,mode){
 }
 //获取指定 Tag
 function getTagNow(u,i,n,a,e){
-  let tagnowHas = document.querySelector(".memos-tagnow")
+  var tagnowHas = document.querySelector(".memos-tagnow")
   if(tagnowHas) tagnowHas.remove();
-  let tagName = e.innerHTML
-  let tagnowDom = `
+  var tagName = e.innerHTML
+  var tagnowDom = `
   <div class="memos-tagnow row p-2 mb-2">
     <div class="memos-tagnow-title mr-3">标签筛选:</div>
     <div class="memos-tagnow-name card-item pr-2 pl-2" onclick="reloadUser()">${tagName}<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-auto ml-1 opacity-40"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></div>
@@ -1282,12 +1282,12 @@ function getTagNow(u,i,n,a,e){
 
 // 加载Twikoo评论
 function loadTwikoo(i) {
-  let twikooEnv = i.getAttribute("data-env")
-  let twikooPath = i.getAttribute("data-path")
-  let twikooId = i.getAttribute("data-id")
-  let twikooTime = i.getAttribute("data-time")
-  let twikooDom = document.getElementById(`${Number(twikooTime)+Number(twikooId)}`);
-  let twikooCon = "<div id='twikoo'></div>"
+  var twikooEnv = i.getAttribute("data-env")
+  var twikooPath = i.getAttribute("data-path")
+  var twikooId = i.getAttribute("data-id")
+  var twikooTime = i.getAttribute("data-time")
+  var twikooDom = document.getElementById(`${Number(twikooTime)+Number(twikooId)}`);
+  var twikooCon = "<div id='twikoo'></div>"
   if (twikooDom.classList.contains('d-none')) {
     document.querySelectorAll('.item-comment').forEach((item) => {item.classList.add('d-none');})
     if(document.getElementById("twikoo")){
@@ -1308,12 +1308,12 @@ function loadTwikoo(i) {
 
 // 加载Artalk评论
 function loadArtalk(e) {
-  let artalkEnv = e.getAttribute("data-env")
-  let artalkPath= e.getAttribute("data-path")
-  let artalkId = e.getAttribute("data-id")
-  let artalkTime = e.getAttribute("data-time")
-  let artalkDom = document.getElementById(`${Number(artalkTime) + Number(artalkId)}`);
-  let artalkCon = "<div id='artalk'></div>"
+  var artalkEnv = e.getAttribute("data-env")
+  var artalkPath= e.getAttribute("data-path")
+  var artalkId = e.getAttribute("data-id")
+  var artalkTime = e.getAttribute("data-time")
+  var artalkDom = document.getElementById(`${Number(artalkTime) + Number(artalkId)}`);
+  var artalkCon = "<div id='artalk'></div>"
   if (artalkDom.classList.contains('d-none')) {
     document.querySelectorAll('.item-comment').forEach((item) => {item.classList.add('d-none');})
     if(document.getElementById("artalk")){
@@ -1336,14 +1336,14 @@ function loadArtalk(e) {
 }
 //收藏
 function saveMemo(memo) {
-    let e = JSON.parse(memo.getAttribute("data-form"));
+    var e = JSON.parse(memo.getAttribute("data-form"));
     memosContent = e.content;
     memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
-    let  hasContent = memosContent.length !== 0;
+    var  hasContent = memosContent.length !== 0;
     if (memosOpenId && hasContent) {
       submitMemoBtn.classList.add("noclick")
-      let memoUrl = `${memosPath}/api/v1/memo`;
-      let memoBody = {content:memosContent,visibility:"PRIVATE"}
+      var memoUrl = `${memosPath}/api/v1/memo`;
+      var memoBody = {content:memosContent,visibility:"PRIVATE"}
       fetch(memoUrl, {
         method: 'POST',
         body: JSON.stringify(memoBody),
@@ -1360,15 +1360,15 @@ function saveMemo(memo) {
 }
 
 //编辑修改
-let memosOldSelect;
+var memosOldSelect;
 function editMemo(memo) {
   memosOldSelect = memosVisibilitySelect.value;
   getEditor = window.localStorage && window.localStorage.getItem("memos-editor-display");
   memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
   if(memosOpenId && getEditor == "show"){
     document.querySelector(".memos-image-list").innerHTML = '';
-    let e = JSON.parse(memo.getAttribute("data-form"));
-    let memoResList = e.resourceList,memosResource = [],imageList = "";
+    var e = JSON.parse(memo.getAttribute("data-form"));
+    var memoResList = e.resourceList,memosResource = [],imageList = "";
     memosVisibilitySelect.value = e.visibility;
     window.localStorage && window.localStorage.setItem("memos-editor-dataform",JSON.stringify(e));
     window.localStorage && window.localStorage.setItem("memos-visibility-select",memosVisibilitySelect.value);
@@ -1377,8 +1377,8 @@ function editMemo(memo) {
     submitMemoBtn.classList.add("d-none");
     editMemoDom.classList.remove("d-none");
     if(memoResList.length > 0){
-      for (let i = 0; i < memoResList.length; i++) {
-        let imgLink = '', fileId = '',resexlink = memoResList[i].externalLink;
+      for (var i = 0; i < memoResList.length; i++) {
+        var imgLink = '', fileId = '',resexlink = memoResList[i].externalLink;
         if (resexlink) {
             imgLink = resexlink
         } else {
@@ -1397,8 +1397,8 @@ function editMemo(memo) {
 }
 
 editMemoBtn.addEventListener("click", function () {
-  let dataformNow = JSON.parse(window.localStorage && window.localStorage.getItem("memos-editor-dataform"));
-  let memoId = dataformNow.id,memoRelationList = dataformNow.relationList,
+  var dataformNow = JSON.parse(window.localStorage && window.localStorage.getItem("memos-editor-dataform"));
+  var memoId = dataformNow.id,memoRelationList = dataformNow.relationList,
   memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token"),
   memoContent = memosTextarea.value,
   memocreatedTs = dataformNow.createdTs,
@@ -1407,10 +1407,10 @@ editMemoBtn.addEventListener("click", function () {
   if(memoChangeDate == 1){
     memocreatedTs = Math.floor(Date.now() / 1000);;
   }
-  let hasContent = memoContent.length !== 0;
+  var hasContent = memoContent.length !== 0;
   if (hasContent) {
-    let memoUrl = `${memosPath}/api/v1/memo/${memoId}`;
-    let memoBody = {content:memoContent,id:memoId,createdTs:memocreatedTs,relationList:memoRelationList,resourceIdList:memoResourceList,visibility:memoVisibility}
+    var memoUrl = `${memosPath}/api/v1/memo/${memoId}`;
+    var memoBody = {content:memoContent,id:memoId,createdTs:memocreatedTs,relationList:memoRelationList,resourceIdList:memoResourceList,visibility:memoVisibility}
     fetch(memoUrl, {
       method: 'PATCH',
       body: JSON.stringify(memoBody),
@@ -1420,7 +1420,7 @@ editMemoBtn.addEventListener("click", function () {
       }
     }).then(function(res) {
       if (res.ok) {
-        let tagnowHas = document.querySelector(".memos-tagnow")
+        var tagnowHas = document.querySelector(".memos-tagnow")
         if(tagnowHas) tagnowHas.remove();
         cocoMessage.success(
         '修改成功',
@@ -1445,7 +1445,7 @@ cancelEditBtn.addEventListener("click", function () {
 })
 
 function setMemoTag(e){
-  let memoTag = '';
+  var memoTag = '';
   const inputValue = memosTextarea.value;
   const lastWord = inputValue.charAt(inputValue.length - 1);
   if (lastWord == '#') {
@@ -1459,12 +1459,12 @@ function setMemoTag(e){
 }
 //归档
 function archiveMemo(memoId) {
-  let isOk = confirm("确认归档？");
+  var isOk = confirm("确认归档？");
   if(isOk){
     memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
     if(memosOpenId && memoId){
-      let memoUrl = `${memosPath}/api/v1/memo/${memoId}`;
-      let memoBody = {id:memoId,rowStatus:"ARCHIVED"};
+      var memoUrl = `${memosPath}/api/v1/memo/${memoId}`;
+      var memoBody = {id:memoId,rowStatus:"ARCHIVED"};
       fetch(memoUrl, {
         method: 'PATCH',
         body: JSON.stringify(memoBody),
@@ -1477,7 +1477,7 @@ function archiveMemo(memoId) {
           cocoMessage.success(
           '归档成功',
           ()=>{
-            let memosMode = window.localStorage && window.localStorage.getItem("memos-mode");
+            var memosMode = window.localStorage && window.localStorage.getItem("memos-mode");
             getUserMemos(nowLink,nowId,nowName,nowAvatar,"","",memosMode)
           })
         }
@@ -1488,11 +1488,11 @@ function archiveMemo(memoId) {
 
 //删除
 function deleteMemo(memoId) {
-  let isOk = confirm("确认删除？");
+  var isOk = confirm("确认删除？");
   if(isOk){
     memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
     if(memosOpenId && memoId){
-      let memoUrl = `${memosPath}/api/v1/memo/${memoId}`;
+      var memoUrl = `${memosPath}/api/v1/memo/${memoId}`;
       fetch(memoUrl, {
         method: 'DELETE',
         headers: {
@@ -1504,7 +1504,7 @@ function deleteMemo(memoId) {
           cocoMessage.success(
           '删除成功',
           ()=>{
-            let memosMode = window.localStorage && window.localStorage.getItem("memos-mode");
+            var memosMode = window.localStorage && window.localStorage.getItem("memos-mode");
             getUserMemos(nowLink,nowId,nowName,nowAvatar,"","",memosMode)
           })
         }
@@ -1516,32 +1516,32 @@ function deleteMemo(memoId) {
 }
 
 function viaNow(e){
-  let dataForm = JSON.parse(e.getAttribute("data-form"));
-  let memoName = dataForm.creatorName
-  let memoLink = dataForm.link+ "/m/" + (dataForm.name || dataForm.id);
-  let memoContent = dataForm.content
+  var dataForm = JSON.parse(e.getAttribute("data-form"));
+  var memoName = dataForm.creatorName
+  var memoLink = dataForm.link+ "/m/" + (dataForm.name || dataForm.id);
+  var memoContent = dataForm.content
   if(memoContent.length > 120){
     memoContent = memoContent.substring(0, 119) + '...';
   }
-  let viaCopy = `${memoContent}（via [@${memoName}](${memoLink})）`
+  var viaCopy = `${memoContent}（via [@${memoName}](${memoLink})）`
   navigator.clipboard.writeText(viaCopy).then(() => {
     cocoMessage.success("引用内容已复制")
   });
 }
 
 function getEditIcon() {
-  let memosContent = '',memosVisibility = '',memosResource = [],memosRelation=[];
-  let memosCount = window.localStorage && window.localStorage.getItem("memos-response-count");
-  let memosPath = window.localStorage && window.localStorage.getItem("memos-access-path");
-  let memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
-  let getEditor = window.localStorage && window.localStorage.getItem("memos-editor-display");
-  let isHide = getEditor === "hide";
+  var memosContent = '',memosVisibility = '',memosResource = [],memosRelation=[];
+  var memosCount = window.localStorage && window.localStorage.getItem("memos-response-count");
+  var memosPath = window.localStorage && window.localStorage.getItem("memos-access-path");
+  var memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
+  var getEditor = window.localStorage && window.localStorage.getItem("memos-editor-display");
+  var isHide = getEditor === "hide";
   memosVisibilitySelect.value = getSelectedValue;
   window.localStorage && window.localStorage.setItem("memos-resource-list",  JSON.stringify(memosResource));
   window.localStorage && window.localStorage.setItem("memos-relation-list",  JSON.stringify(memosRelation));
 
-  let memosTagList = document.querySelector(".memos-tag-list")
-  let selectedTagIndex = -1;
+  var memosTagList = document.querySelector(".memos-tag-list")
+  var selectedTagIndex = -1;
   memosTextarea.addEventListener('input', (e) => {
     memosTextarea.style.height = 'inherit';
     memosTextarea.style.height = e.target.scrollHeight + 'px';
@@ -1569,7 +1569,7 @@ function getEditIcon() {
         Array.from(memosTagList.querySelectorAll('.memos-tag')).forEach((option, index) => option.classList.toggle('selected', index  === selectedTagIndex));
       } else if (keyCode === 13 && selectedTagIndex !== -1) {
         event.preventDefault();
-        let tagName = matchingTags[selectedTagIndex].replace(/[#]/,'') + " "
+        var tagName = matchingTags[selectedTagIndex].replace(/[#]/,'') + " "
         insertValue(tagName,"",0)
         memosTagList.querySelector('.memos-tag').classList.remove('selected');
         memosTagList.classList.add('d-none');
@@ -1595,9 +1595,9 @@ function getEditIcon() {
   });
 
   //todoBtn.addEventListener("click", function () {
-  //  let memoTodo = '- [] \n';
+  //  var memoTodo = '- [] \n';
   //  insertValue(memoTodo);
-  //  let bracketIndex = memosTextarea.value.indexOf("[]");
+  //  var bracketIndex = memosTextarea.value.indexOf("[]");
   //  if (bracketIndex !== -1) {
   //    memosTextarea.selectionStart = bracketIndex + 1;
   //    memosTextarea.selectionEnd = bracketIndex + 1;
@@ -1609,7 +1609,7 @@ function getEditIcon() {
   });
 
   codeBtn.addEventListener("click", function () {
-    let memoCode = "```\n\n```\n";
+    var memoCode = "```\n\n```\n";
     insertValue(memoCode,"",5);
     memosTextarea.style.height = memosTextarea.scrollHeight + 'px';
   });
@@ -1637,7 +1637,7 @@ function getEditIcon() {
       memosVisibilitySelect.value = "PRIVATE"
       usernowBtnDom.forEach((item) => {item.classList.remove('current');})
       window.localStorage && window.localStorage.setItem("memos-mode",  "NOPUBLIC");
-      let memosMode = window.localStorage && window.localStorage.getItem("memos-mode");
+      var memosMode = window.localStorage && window.localStorage.getItem("memos-mode");
       getUserMemos(nowLink,nowId,nowName,nowAvatar,"","","NOPUBLIC")
       cocoMessage.success("进入「私有浏览」模式")
     }else{
@@ -1650,8 +1650,8 @@ function getEditIcon() {
   });
   
   randomBtn.addEventListener("click", async function () {
-    let memosAllCount = window.localStorage && window.localStorage.getItem("memos-response-count");
-    let nowTag,userMemoUrl;
+    var memosAllCount = window.localStorage && window.localStorage.getItem("memos-response-count");
+    var nowTag,userMemoUrl;
     nowTagText = document.querySelector(".memos-tagnow-name") || ''
     if(nowTagText){
       nowTag = nowTagText.textContent;
@@ -1661,7 +1661,7 @@ function getEditIcon() {
     }
     if(!memosAllCount || nowTagText){
       try {
-        let response = await fetch(userMemoUrl,{
+        var response = await fetch(userMemoUrl,{
             headers: {
               'Authorization': `Bearer ${memosOpenId}`,
               'Content-Type': 'application/json',
@@ -1672,12 +1672,12 @@ function getEditIcon() {
         if (!response.ok) {
           throw new Error(response.statusText);
         }
-        let data = await response.json();
+        var data = await response.json();
         memosAllCount = data.length - 1;
         if(!nowTag){
           window.localStorage && window.localStorage.setItem("memos-response-count",memosAllCount);
         }
-        let randomNum = random(0,memosAllCount);
+        var randomNum = random(0,memosAllCount);
         getUserMemos(nowLink,nowId,nowName,nowAvatar,nowTag,"","",randomNum)
       } catch (error) {
         console.error(error);
@@ -1686,20 +1686,20 @@ function getEditIcon() {
         oneDayBtn.classList.remove("d-none")
       }
     }else{
-        let randomNum = random(0,memosAllCount);
+        var randomNum = random(0,memosAllCount);
         getUserMemos(nowLink,nowId,nowName,nowAvatar,nowTag,"","",randomNum)
     }
   });
 
   //开启回忆一条
   oneDayBtn.addEventListener("click", async function () {
-    let oneDayNow = window.localStorage && window.localStorage.getItem("memos-oneday-tag");
+    var oneDayNow = window.localStorage && window.localStorage.getItem("memos-oneday-tag");
     if (oneDayNow == null ) {
-      let nowTag = document.querySelector(".memos-tagnow-name").textContent
-      let nowTagCount;
-      let nowTagUrl= `${nowLink}/api/v1/memo?tag=${nowTag}`
+      var nowTag = document.querySelector(".memos-tagnow-name").textContent
+      var nowTagCount;
+      var nowTagUrl= `${nowLink}/api/v1/memo?tag=${nowTag}`
       try {
-        let response = await fetch(nowTagUrl,{
+        var response = await fetch(nowTagUrl,{
             headers: {
               'Authorization': `Bearer ${memosOpenId}`,
               'Content-Type': 'application/json',
@@ -1710,7 +1710,7 @@ function getEditIcon() {
         if (!response.ok) {
           throw new Error(response.statusText);
         }
-        let data = await response.json();
+        var data = await response.json();
         nowTagCount = data.length - 1;
         window.localStorage && window.localStorage.setItem("memos-oneday-tag",nowTag);
         window.localStorage && window.localStorage.setItem("memos-oneday-count",nowTagCount);
@@ -1727,9 +1727,9 @@ function getEditIcon() {
   });
   
   uploadWebpImageInput.addEventListener('change', () => {
-    let filesData = uploadWebpImageInput.files;
+    var filesData = uploadWebpImageInput.files;
     if (filesData.length !== 0) {
-        for (let i = 0; i < filesData.length; i++) {
+        for (var i = 0; i < filesData.length; i++) {
             uploadWebpImage(filesData[i]);
         }
         cocoMessage.info('压缩并上传中……');
@@ -1737,31 +1737,31 @@ function getEditIcon() {
   });
 
   async function uploadWebpImage(data) {
-    let memosResourceListNow = JSON.parse(window.localStorage && window.localStorage.getItem("memos-resource-list")) || [];
-    let imageData = new FormData();
-    let blobUrl = `${memosPath}/api/v1/resource/blob`;
+    var memosResourceListNow = JSON.parse(window.localStorage && window.localStorage.getItem("memos-resource-list")) || [];
+    var imageData = new FormData();
+    var blobUrl = `${memosPath}/api/v1/resource/blob`;
     const webpData = await convertToWebP(data);
     const timestamp = new Date().getTime();
     const fileName = `${timestamp}_${Math.random()}.webp`;
     imageData.append('file', webpData, fileName);
-    let resp = await fetch(blobUrl, {
+    var resp = await fetch(blobUrl, {
         method: "POST",
         body: imageData,
         headers: {
             'Authorization': `Bearer ${memosOpenId}`
         }
     });
-    let res = await resp.json();
+    var res = await resp.json();
     if (res.id) {
-        let resexlink = res.externalLink;
-        let imgLink = '', fileId = '';
+        var resexlink = res.externalLink;
+        var imgLink = '', fileId = '';
         if (resexlink) {
             imgLink = resexlink;
         } else {
             fileId = res.publicId || res.filename;
             imgLink = `${memosPath}/o/r/${res.id}`;
         }
-        let imageList = "";
+        var imageList = "";
         imageList += `<div data-id="${res.id}" class="imagelist-item d-flex text-xs mt-2 mr-2" onclick="deleteImage(this)">
                         <div class="d-flex image-background" style="background-image:url(${imgLink})">
                             <span class="d-none">${fileId}</span>
@@ -1793,7 +1793,7 @@ function getEditIcon() {
     });
   };
   uploadImageInput.addEventListener('change', () => {
-    let filesData = uploadImageInput.files[0];
+    var filesData = uploadImageInput.files[0];
     if (uploadImageInput.files.length !== 0){
       uploadImage(filesData);
       cocoMessage.info('图片上传中……');
@@ -1801,28 +1801,28 @@ function getEditIcon() {
   });
 
   async function uploadImage(data) {
-    let memosResourceListNow = JSON.parse(window.localStorage && window.localStorage.getItem("memos-resource-list")) || [];
-    let imageData = new FormData();
-    let blobUrl = `${memosPath}/api/v1/resource/blob`;
+    var memosResourceListNow = JSON.parse(window.localStorage && window.localStorage.getItem("memos-resource-list")) || [];
+    var imageData = new FormData();
+    var blobUrl = `${memosPath}/api/v1/resource/blob`;
     imageData.append('file', data, data.name)
-    let resp = await fetch(blobUrl, {
+    var resp = await fetch(blobUrl, {
       method: "POST",
       body: imageData,
       headers: {
         'Authorization': `Bearer ${memosOpenId}`
       }
     })
-    let res = await resp.json();
+    var res = await resp.json();
     if(res.id){
-      let resexlink = res.externalLink;
-      let imgLink = '', fileId = '';
+      var resexlink = res.externalLink;
+      var imgLink = '', fileId = '';
       if (resexlink) {
           imgLink = resexlink
       } else {
           fileId = res.publicId || res.filename
           imgLink = `${memosPath}/o/r/${res.id}`;///${fileId}
       }
-      let imageList = "";
+      var imageList = "";
       imageList += `<div data-id="${res.id}" class="imagelist-item d-flex text-xs mt-2 mr-2" onclick="deleteImage(this)"><div class="d-flex image-background" style="background-image:url(${imgLink})"><span class="d-none">${fileId}</span></div></div>`;
       document.querySelector(".memos-image-list").insertAdjacentHTML('afterbegin', imageList);
       cocoMessage.success(
@@ -1849,7 +1849,7 @@ function getEditIcon() {
     }else if(pathInput.value == null || pathInput.value == ''){
       cocoMessage.info('请输入Path');
     }else{
-      let pathInputValue = pathInput.value;
+      var pathInputValue = pathInput.value;
       if (pathInputValue.substr(-1) === '/') {
         pathInputValue = pathInputValue.substr(0, pathInputValue.length - 1);
       }
@@ -1868,13 +1868,13 @@ function getEditIcon() {
     memosVisibility = memosVisibilitySelect.value;
     memosResource = window.localStorage && JSON.parse(window.localStorage.getItem("memos-resource-list"));
     memosOpenId = window.localStorage && window.localStorage.getItem("memos-access-token");
-    let TAG_REG = /(?<=#)([^#\s!.,;:?"'()]+)(?= )/g;
-    let memosTag = memosContent.match(TAG_REG);
-    let  hasContent = memosContent.length !== 0;
+    var TAG_REG = /(?<=#)([^#\s!.,;:?"'()]+)(?= )/g;
+    var memosTag = memosContent.match(TAG_REG);
+    var  hasContent = memosContent.length !== 0;
     if (memosOpenId && hasContent) {
       submitMemoBtn.classList.add("noclick")
-      let memoUrl = `${memosPath}/api/v1/memo`;
-      let memoBody = {content:memosContent,relationList:memosRelation,resourceIdList:memosResource,visibility:memosVisibility}
+      var memoUrl = `${memosPath}/api/v1/memo`;
+      var memoBody = {content:memosContent,relationList:memosRelation,resourceIdList:memosResource,visibility:memosVisibility}
       fetch(memoUrl, {
         method: 'POST',
         body: JSON.stringify(memoBody),
@@ -1885,7 +1885,7 @@ function getEditIcon() {
       }).then(function (res) {
         if (res.status == 200) {
           if (memosTag !== null) {
-            let memoTagUrl = `${memosPath}/api/v1/tag`;
+            var memoTagUrl = `${memosPath}/api/v1/tag`;
             (async () => {
               for await (const i of memosTag) {
                 const response = await fetch(memoTagUrl, {
@@ -1936,7 +1936,7 @@ function getEditIcon() {
       }).then(response => response.json()).then(resdata => {
         return resdata
       }).then(response => {
-        let taglist = "";
+        var taglist = "";
         response.map((t)=>{
           nowTagList += `${t},`;
           taglist += `<div class="memos-tag d-flex text-xs mt-2 mr-2 px-2" onclick="setMemoTag(this)">#${t}</div>`;
@@ -1955,13 +1955,13 @@ function getEditIcon() {
   }
 
   function random(a,b) {
-    let choices = b - a + 1;
+    var choices = b - a + 1;
     return Math.floor(Math.random() * choices + a);
   }
 
   async function getMemosData(p,t) {
     try {
-      let response = await fetch(`${p}/api/v1/user/me`,{//api/v1/status,memo;api/v1/user/me
+      var response = await fetch(`${p}/api/v1/user/me`,{//api/v1/status,memo;api/v1/user/me
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${t}`,
@@ -1969,7 +1969,7 @@ function getEditIcon() {
         } 
       });
       if (response.ok) {
-        let resdata = await response.json();
+        var resdata = await response.json();
         if (resdata) {
           memosMeID = resdata.id;
           memosMeNickname = resdata.nickname;
@@ -2007,7 +2007,7 @@ function insertValue(text,wrap,back) {
     memosTextarea.selectionStart = start + text.length - back;
     memosTextarea.selectionEnd = start + text.length - back;
   }else{
-    let wrapSelText;
+    var wrapSelText;
     if( wrap == "`" ){
       wrapSelText = " `" + selectedText + "` ";
       back = 0;
@@ -2027,9 +2027,9 @@ function insertValue(text,wrap,back) {
 
 function deleteImage(e){
   if(e){
-    let memoId = e.getAttribute("data-id")
-    let memosResource = window.localStorage && JSON.parse(window.localStorage.getItem("memos-resource-list"));
-    let memosResourceList = memosResource.filter(function(item){ return item != memoId});
+    var memoId = e.getAttribute("data-id")
+    var memosResource = window.localStorage && JSON.parse(window.localStorage.getItem("memos-resource-list"));
+    var memosResourceList = memosResource.filter(function(item){ return item != memoId});
     window.localStorage && window.localStorage.setItem("memos-resource-list",  JSON.stringify(memosResourceList));
     e.remove()
   } 
@@ -2038,8 +2038,8 @@ function deleteImage(e){
 function imageListDrag(){// 获取包含所有图像元素的父元素
   const imageList = document.querySelector('.memos-image-list');
   // 存储被拖动的元素
-  let draggedItem = null;
-  let memosResourceList;
+  var draggedItem = null;
+  var memosResourceList;
   // 为每个图像元素添加拖动事件监听器
   imageList.querySelectorAll('.imagelist-item').forEach(item => {
     item.draggable = true;
@@ -2077,7 +2077,7 @@ function imageListDrag(){// 获取包含所有图像元素的父元素
         this.parentNode.insertBefore(draggedItem, this.nextElementSibling); 
       }
       document.querySelectorAll('.memos-image-list .imagelist-item').forEach((item) => {
-        let itemId = Number(item.dataset.id)
+        var itemId = Number(item.dataset.id)
         memosResourceList.push(itemId);
       })
       window.localStorage && window.localStorage.setItem("memos-resource-list",  JSON.stringify(memosResourceList));
@@ -2095,18 +2095,18 @@ function clearTextarea(mode){
   document.querySelector(".memos-image-list").innerHTML = '';
   window.localStorage && window.localStorage.removeItem("memos-resource-list");
   window.localStorage && window.localStorage.removeItem("memos-relation-list");
-  let memosTextarea = document.querySelector(".memos-editor-textarea")
+  var memosTextarea = document.querySelector(".memos-editor-textarea")
   memosTextarea.value = '';
   memosTextarea.style.height = 'inherit';
-  let memosMode = mode || window.localStorage && window.localStorage.getItem("memos-mode");
+  var memosMode = mode || window.localStorage && window.localStorage.getItem("memos-mode");
   if(memosMode != "cancel"){
     getUserMemos(nowLink,nowId,nowName,nowAvatar,"","",memosMode)
   }
 }
 // 获取 owo.json 文件中的数据
-let emojiSelectorVisible = false;
-let emojiSelector;
-let emojis = [{"icon": "😂","text": "哭笑不得"},{"icon": "😎","text": "酷"},{"icon": "😏","text": "坏笑"},{"icon": "😅","text": "流汗"},{"icon": "😄","text": "笑"},{"icon": "😜","text": "调皮"},{"icon": "🤣","text": "笑倒"},{"icon": "😭","text": "大哭"},{"icon": "🙄","text": "白眼"},{"icon": "🤐","text": "嘘"},{"icon": "😋","text": "美食脸"},{"icon": "🥶","text": "冰冻"},{"icon": "🥵","text": "热"},{"icon": "😴","text": "睡觉"},{"icon": "🤧","text": "打喷嚏"},{"icon": "🍉","text": "西瓜"},{"icon": "😱","text": "惊恐"},{"icon": "👋","text": "招手"},{"icon": "🔨","text": "锤子"},{"icon": "🐶","text": "小狗"},{"icon": "👏","text": "鼓掌"},{"icon": "🙈","text": "不看"},{"icon": "😓","text": "汗"},{"icon": "😍","text": "爱心眼"},{"icon": "🤝","text": "握手"},{"icon": "🥺","text": "求你"},{"icon": "😔","text": "沮丧"},{"icon": "😪","text": "困"},{"icon": "😕","text": "困惑"},{"icon": "🤷‍♂️","text": "摊手"},{"icon": "😛","text": "舌头"},{"icon": "🤭","text": "偷笑"},{"icon": "🤮","text": "呕吐"},{"icon": "🥺","text": "求你"},{"icon": "🙂","text": "轻松的笑"},{"icon": "😈","text": "恶魔"},{"icon": "😃","text": "笑脸"},{"icon": "🤫","text": "嘘"},{"icon": "😒","text": "无语"},{"icon": "😵","text": "晕"},{"icon": "💪","text": "加油"},{"icon": "👍","text": "赞"},{"icon": "👎",  "text": "踩"},{"icon": "😡","text": "愤怒"},{"icon": "🤬","text": "怒骂"},{"icon": "😖","text": "心烦"},{"icon": "🌹","text": "玫瑰"},{"icon": "🏃","text": "跑步"},{"icon": "😆","text": "大笑"},{"icon": "💵","text": "钞票"},{"icon": "😘","text": "飞吻"},{"icon": "😷","text": "生病"},{"icon": "🤕","text": "受伤"},{"icon": "🎉","text": "庆祝"},{"icon": "❤️","text": "红心"},{"icon": "💔","text": "心碎"},{"icon": "😣","text": "无奈"},{"icon": "😘","text": "飞吻"},{"icon": "💩","text": "一坨便便"},{"icon": "🤩","text": "爱慕"}];
+var emojiSelectorVisible = false;
+var emojiSelector;
+var emojis = [{"icon": "😂","text": "哭笑不得"},{"icon": "😎","text": "酷"},{"icon": "😏","text": "坏笑"},{"icon": "😅","text": "流汗"},{"icon": "😄","text": "笑"},{"icon": "😜","text": "调皮"},{"icon": "🤣","text": "笑倒"},{"icon": "😭","text": "大哭"},{"icon": "🙄","text": "白眼"},{"icon": "🤐","text": "嘘"},{"icon": "😋","text": "美食脸"},{"icon": "🥶","text": "冰冻"},{"icon": "🥵","text": "热"},{"icon": "😴","text": "睡觉"},{"icon": "🤧","text": "打喷嚏"},{"icon": "🍉","text": "西瓜"},{"icon": "😱","text": "惊恐"},{"icon": "👋","text": "招手"},{"icon": "🔨","text": "锤子"},{"icon": "🐶","text": "小狗"},{"icon": "👏","text": "鼓掌"},{"icon": "🙈","text": "不看"},{"icon": "😓","text": "汗"},{"icon": "😍","text": "爱心眼"},{"icon": "🤝","text": "握手"},{"icon": "🥺","text": "求你"},{"icon": "😔","text": "沮丧"},{"icon": "😪","text": "困"},{"icon": "😕","text": "困惑"},{"icon": "🤷‍♂️","text": "摊手"},{"icon": "😛","text": "舌头"},{"icon": "🤭","text": "偷笑"},{"icon": "🤮","text": "呕吐"},{"icon": "🥺","text": "求你"},{"icon": "🙂","text": "轻松的笑"},{"icon": "😈","text": "恶魔"},{"icon": "😃","text": "笑脸"},{"icon": "🤫","text": "嘘"},{"icon": "😒","text": "无语"},{"icon": "😵","text": "晕"},{"icon": "💪","text": "加油"},{"icon": "👍","text": "赞"},{"icon": "👎",  "text": "踩"},{"icon": "😡","text": "愤怒"},{"icon": "🤬","text": "怒骂"},{"icon": "😖","text": "心烦"},{"icon": "🌹","text": "玫瑰"},{"icon": "🏃","text": "跑步"},{"icon": "😆","text": "大笑"},{"icon": "💵","text": "钞票"},{"icon": "😘","text": "飞吻"},{"icon": "😷","text": "生病"},{"icon": "🤕","text": "受伤"},{"icon": "🎉","text": "庆祝"},{"icon": "❤️","text": "红心"},{"icon": "💔","text": "心碎"},{"icon": "😣","text": "无奈"},{"icon": "😘","text": "飞吻"},{"icon": "💩","text": "一坨便便"},{"icon": "🤩","text": "爱慕"}];
 
 // 表情选择器点击事件处理
 biaoqingBtn.addEventListener("click", function (event) {
@@ -2155,7 +2155,7 @@ function insertEmoji(emojiText) {
 }
 
 // 回到顶部
-let BackTop = document.querySelector(".backtop")
+var BackTop = document.querySelector(".backtop")
 document.onscroll = function() {
 	var iRollingLength = document.documentElement.scrollTop
 	if(iRollingLength > 300){
@@ -2173,9 +2173,9 @@ cfAiBtn.addEventListener('click', async function () {
   cfAiBtn.classList.add("d-none","noclick")
   cfAiLoadBtn.classList.remove("d-none")
   try{
-    let textOld = memosTextarea.value
-    let input = encodeURIComponent(memosTextarea.value)
-    let fetchUrl = `${cfwkAiUrl}/?q=${input}`
+    var textOld = memosTextarea.value
+    var input = encodeURIComponent(memosTextarea.value)
+    var fetchUrl = `${cfwkAiUrl}/?q=${input}`
     const source = new EventSource(fetchUrl);
     memosTextarea.value = `${textOld}\n----------\n`
     source.onmessage = (event) => {
@@ -2198,9 +2198,9 @@ cfAiBtn.addEventListener('click', async function () {
 }
 
 function geminiAI(e){
-  let AIMode = e.innerText
-  let textOld = memosTextarea.value
-  let memosContent;
+  var AIMode = e.innerText
+  var textOld = memosTextarea.value
+  var memosContent;
   if(!textOld){
     cocoMessage.info('内容不能为空');
     return
@@ -2225,7 +2225,7 @@ function geminiAI(e){
   sendToGemini(memosContent)
 };
 
-let GeminiFetch = "https://lmm-api-gemini.deno.dev/v1/chat/completions"
+var GeminiFetch = "https://lmm-api-gemini.deno.dev/v1/chat/completions"
 //"https://gemini-openai-proxy.deno.dev/v1/chat/completions"
 async function sendToGemini(memosContent) {
   const res = await fetch(GeminiFetch, {
@@ -2272,8 +2272,8 @@ async function sendToGemini(memosContent) {
 }
 
 async function getMemosForAI(){
-  let fetchUrl = `${nowLink}/api/v1/memo?creatorId=${nowId}&limit=100`
-  let response = await fetch(fetchUrl,{
+  var fetchUrl = `${nowLink}/api/v1/memo?creatorId=${nowId}&limit=100`
+  var response = await fetch(fetchUrl,{
     headers: {
       'Authorization': `Bearer ${memosOpenId}`,
       'Content-Type': 'application/json',
@@ -2284,7 +2284,7 @@ async function getMemosForAI(){
   if (!response.ok) {
     throw new Error(`Request failed oneDay`);
   }
-  let originalArray = await response.json()
+  var originalArray = await response.json()
 
   const filteredArray = originalArray.map(item => {
     return { id: item.id, content: item.content };
